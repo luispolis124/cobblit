@@ -38,4 +38,3 @@ go run main.go
 Cobblit is an open-source project. If you are a developer and would like to contribute to the engine's core, feel free to open a Pull Request or report an issue.
 ## License
 This project is licensed under the **MIT License** - see the LICENSE file for details.
-```
