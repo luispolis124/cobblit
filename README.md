@@ -33,7 +33,7 @@ go run main.go
  * [x] Implement RakNet protocol foundation
  * [x] Packet decoding and encoding system
  * [x] Player connection and handshake handling
- * [ ] World management and chunk streaming
+ * [x] World management and chunk streaming
 ## Contributing
 Cobblit is an open-source project. If you are a developer and would like to contribute to the engine's core, feel free to open a Pull Request or report an issue.
 ## License
