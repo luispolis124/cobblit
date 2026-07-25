@@ -1,15 +1,15 @@
-# Cobblit Engine - Arquitetura e Diretrizes de Alta Performance
+# Cobblit Engine - High-Performance Architecture and Guidelines
 
-Este documento descreve os pilares arquiteturais do **Cobblit Engine**, inspirados em modelos de alta concorrência em Go:
+This document describes the architectural pillars of the **Cobblit Engine**, inspired by high-concurrency models in Go:
 
-1. **Estrutura de Rotinas (Goroutines):** 
-   Utilização de `go func()` para lidar com aceitação de clientes, simulação de mundos e eventos simultâneos sem bloquear a thread principal do motor.
+1. **Goroutines Structure:** 
+   Utilization of `go func()` to handle client acceptance, world simulation, and simultaneous events without blocking the engine's main thread.
 
-2. **Uso como Biblioteca:** 
-   O núcleo do servidor atua como um pacote importável, permitindo que o `main.go` funcione como ponto flexível de configuração e inicialização de regras customizadas.
+2. **Library Usage:** 
+   The server core acts as an importable package, allowing `main.go` to function as a flexible point for configuration and custom rule initialization.
 
-3. **Gerenciamento de Pacotes:** 
-   Gerenciamento estrito de dependências utilizando módulos nativos do Go (`go mod init` e `go get`) para isolamento e reprodutibilidade.
+3. **Package Management:** 
+   Strict dependency management using native Go modules (`go mod init` and `go get`) for isolation and reproducibility.
 
-4. **Comunicação Assíncrona:** 
-   Emprego de canais (`channels`) para a troca segura e desacoplada de dados entre threads em tarefas como chat, streaming de chunks e eventos de plugins.
+4. **Asynchronous Communication:** 
+   Employment of Go channels for safe and decoupled data exchange between threads in tasks such as chat, chunk streaming, and plugin events.
