@@ -34,13 +34,14 @@ func main() {
 	srv := conf.New()
 	srv.CloseOnProgramEnd()
 
+	// Registra os comandos personalizados do Cobblit Engine
+	plugins.RegistrarComandos()
+
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
 
 	go func() {
 		for pInstance := range srv.Accept() {
 			players.RegistrarEntrada(pInstance)
-			
-			// Executa o plugin de boas-vindas modular
 			plugins.RegistrarBoasVindas(pInstance)
 
 			go func(pl *player.Player) {

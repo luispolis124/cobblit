@@ -18,3 +18,46 @@
 22:27:26.094569 db@open done T·8.316511ms
 22:30:26.029012 db@close closing
 22:30:26.037687 db@close done T·11.376355ms
+=============== Jul 25, 2026 (UTC) ===============
+22:32:59.679877 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+22:32:59.688150 version@stat F·[1] S·743B[743B] Sc·[0.25]
+22:32:59.688605 db@open opening
+22:32:59.689210 journal@recovery F·1
+22:32:59.694787 journal@recovery recovering @3
+22:32:59.713975 memdb@flush created L0@5 N·1 S·726B ")\xfde..3\xe7\xc5,v3":")\xfde..3\xe7\xc5,v3"
+22:32:59.715104 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+22:32:59.742545 db@janitor F·4 G·0
+22:32:59.742800 db@open done T·54.085995ms
+22:36:53.559868 db@close closing
+22:36:53.568389 db@close done T·9.231459ms
+=============== Jul 25, 2026 (UTC) ===============
+22:39:03.371191 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+22:39:03.373545 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+22:39:03.373634 db@open opening
+22:39:03.373749 journal@recovery F·1
+22:39:03.374191 journal@recovery recovering @6
+22:39:03.375279 memdb@flush created L0@8 N·1 S·749B ")\xfde..3\xe7\xc5,v5":")\xfde..3\xe7\xc5,v5"
+22:39:03.375581 version@stat F·[3] S·2KiB[2KiB] Sc·[0.75]
+22:39:03.381918 db@janitor F·5 G·0
+22:39:03.382030 db@open done T·8.373595ms
+22:43:21.749751 db@close closing
+22:43:21.755147 db@close done T·8.15849ms
+=============== Jul 25, 2026 (UTC) ===============
+22:46:58.081386 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+22:46:58.083547 version@stat F·[3] S·2KiB[2KiB] Sc·[0.75]
+22:46:58.083651 db@open opening
+22:46:58.083873 journal@recovery F·1
+22:46:58.087517 journal@recovery recovering @9
+22:46:58.089639 memdb@flush created L0@11 N·1 S·684B ")\xfde..3\xe7\xc5,v7":")\xfde..3\xe7\xc5,v7"
+22:46:58.090160 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+22:46:58.095309 db@janitor F·6 G·0
+22:46:58.095391 db@open done T·11.717085ms
+22:46:58.095525 table@compaction L0·4 -> L1·0 S·2KiB Q·8
+22:46:58.100274 table@build created L1@14 N·1 S·684B ")\xfde..3\xe7\xc5,v7":")\xfde..3\xe7\xc5,v7"
+22:46:58.100435 version@stat F·[0 1] S·684B[0B 684B] Sc·[0.00 0.00]
+22:46:58.102573 table@compaction committed F-3 S-2KiB Ke·0 D·3 T·6.962449ms
+22:46:58.102898 table@remove removed @8
+22:46:58.103000 table@remove removed @5
+22:46:58.103075 table@remove removed @2
+22:49:38.934540 db@close closing
+22:49:38.939467 db@close done T·4.774219ms
