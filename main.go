@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -19,34 +20,38 @@ func main() {
 	log.Println("[Cobblit Engine] Inicializando núcleos de simulação...")
 	time.Sleep(1 * time.Second)
 
-	// Inicializa o gerenciador de mundo do Cobblit
 	gameWorld := world.NewWorld("CobblitAlpha")
 	_ = gameWorld
 
-	srv := server.New()
+	// Cria um logger compatível com o slog exigido pelo Dragonfly
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
+
+	// Carrega a configuração do arquivo config.toml passando o logger
+	conf, err := server.DefaultConfig().Config(logger)
+	if err != nil {
+		log.Fatalf("[Cobblit Engine] Erro ao carregar config: %v", err)
+	}
+
+	srv := conf.New()
 	srv.CloseOnProgramEnd()
 
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
 
-	// Loop principal de aceitação de jogadores
 	go func() {
 		for p := range srv.Accept() {
 			players.RegistrarEntrada(p)
 
 			go func(pl *player.Player) {
-				// Simula o streaming de chunks quando o player entra
 				gameWorld.StreamChunks(0, 0)
 			}(p)
 		}
 	}()
 
-	// Inicia o servidor em background
 	go func() {
 		log.Println("--- Cobblit Engine Iniciada com Sucesso ---")
 		srv.Listen()
 	}()
 
-	// Fechamento seguro via Ctrl + C
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
