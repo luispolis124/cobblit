@@ -12,11 +12,16 @@ import (
 	"github.com/df-mc/dragonfly/server/player/chat"
 
 	"github.com/luispolis124/cobblit/internal/players"
+	"github.com/luispolis124/cobblit/internal/world"
 )
 
 func main() {
 	log.Println("[Cobblit Engine] Inicializando núcleos de simulação...")
 	time.Sleep(1 * time.Second)
+
+	// Inicializa o gerenciador de mundo do Cobblit
+	gameWorld := world.NewWorld("CobblitAlpha")
+	_ = gameWorld
 
 	srv := server.New()
 	srv.CloseOnProgramEnd()
@@ -29,18 +34,19 @@ func main() {
 			players.RegistrarEntrada(p)
 
 			go func(pl *player.Player) {
-				// Gerenciamento de eventos de saída futuramente se necessário
+				// Simula o streaming de chunks quando o player entra
+				gameWorld.StreamChunks(0, 0)
 			}(p)
 		}
 	}()
 
-	// Inicia o servidor em background para liberar a thread principal para o Ctrl + C
+	// Inicia o servidor em background
 	go func() {
 		log.Println("--- Cobblit Engine Iniciada com Sucesso ---")
 		srv.Listen()
 	}()
 
-	// Gerenciamento de fechamento seguro via Ctrl + C
+	// Fechamento seguro via Ctrl + C
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
