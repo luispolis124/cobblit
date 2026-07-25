@@ -23,21 +23,22 @@ func main() {
 
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
 
-	// Loop principal de aceitação de jogadores com o novo sistema
+	// Loop principal de aceitação de jogadores
 	go func() {
 		for p := range srv.Accept() {
-			// Registra o player no sistema modular
 			players.RegistrarEntrada(p)
 
-			// Opcional: Se quiser lidar com a saída do jogador em background
 			go func(pl *player.Player) {
 				// Gerenciamento de eventos de saída futuramente se necessário
 			}(p)
 		}
 	}()
 
-	log.Println("--- Cobblit Engine Iniciada com Sucesso ---")
-	srv.Listen()
+	// Inicia o servidor em background para liberar a thread principal para o Ctrl + C
+	go func() {
+		log.Println("--- Cobblit Engine Iniciada com Sucesso ---")
+		srv.Listen()
+	}()
 
 	// Gerenciamento de fechamento seguro via Ctrl + C
 	sigChan := make(chan os.Signal, 1)
