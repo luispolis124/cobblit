@@ -13,6 +13,7 @@ import (
 	"github.com/df-mc/dragonfly/server/player/chat"
 
 	"github.com/luispolis124/cobblit/internal/players"
+	"github.com/luispolis124/cobblit/internal/plugins"
 	"github.com/luispolis124/cobblit/internal/world"
 )
 
@@ -23,10 +24,8 @@ func main() {
 	gameWorld := world.NewWorld("CobblitAlpha")
 	_ = gameWorld
 
-	// Cria um logger compatível com o slog exigido pelo Dragonfly
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
-	// Carrega a configuração do arquivo config.toml passando o logger
 	conf, err := server.DefaultConfig().Config(logger)
 	if err != nil {
 		log.Fatalf("[Cobblit Engine] Erro ao carregar config: %v", err)
@@ -38,12 +37,15 @@ func main() {
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
 
 	go func() {
-		for p := range srv.Accept() {
-			players.RegistrarEntrada(p)
+		for pInstance := range srv.Accept() {
+			players.RegistrarEntrada(pInstance)
+			
+			// Executa o plugin de boas-vindas modular
+			plugins.RegistrarBoasVindas(pInstance)
 
 			go func(pl *player.Player) {
 				gameWorld.StreamChunks(0, 0)
-			}(p)
+			}(pInstance)
 		}
 	}()
 

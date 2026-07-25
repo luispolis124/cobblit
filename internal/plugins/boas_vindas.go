@@ -1,13 +1,24 @@
 package plugins
 
 import (
-	"log"
-
+	"fmt"
 	"github.com/df-mc/dragonfly/server/player"
+	"github.com/df-mc/dragonfly/server/player/title"
+	"time"
 )
 
-// RegistrarBoasVindas gerencia a lógica quando um jogador entra
+const (
+	TitleHeader = "§l§bCOBBLIT ENGINE"
+	TitleSub    = "§7Bem-vindo ao servidor alpha!"
+)
+
 func RegistrarBoasVindas(p *player.Player) {
-	log.Printf("[Plugin: BoasVindas] Jogador processado: %s", p.Name())
-	p.Message("§a[Cobblit] §fMódulo de Boas-Vindas ativado com sucesso!")
+	nome := p.Name()
+	
+	// Envia mensagem no chat
+	p.Message(fmt.Sprintf("§a[Cobblit] Olá, §e%s§a! Aproveite a experiência de alta performance.", nome))
+	
+	// Configura o título passando o tempo correto de duração única
+	t := title.New(TitleHeader).WithSubtitle(TitleSub).WithDuration(5 * time.Second)
+	p.SendTitle(t)
 }
