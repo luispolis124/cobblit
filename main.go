@@ -14,7 +14,6 @@ import (
 
 	"github.com/luispolis124/cobblit/internal/players"
 	"github.com/luispolis124/cobblit/internal/plugins"
-	"github.com/luispolis124/cobblit/internal/world"
 )
 
 func main() {
@@ -24,59 +23,67 @@ func main() {
 	// Carrega as configurações centrais do arquivo config.json
 	cfg := plugins.CarregarOuCriarConfig()
 
-	gameWorld := world.NewWorld("CobblitAlpha")
-	_ = gameWorld
+	// Gestão de Múltiplos Mundos: Carrega o mundo principal e dimensões extras
+	_ = plugins.CarregarOuCriarMundo("world")
+	_ = plugins.CarregarOuCriarMundo("nether")
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
-	// Carrega a configuração padrão do servidor
 	conf, err := server.DefaultConfig().Config(logger)
 	if err != nil {
 		log.Fatalf("[Cobblit Engine] Erro ao carregar config base: %v", err)
 	}
 
-	// Aplica as propriedades válidas vindas direto do config.json
 	conf.Name = cfg.Motd
 	conf.MaxPlayers = cfg.MaxPlayers
 
-	// Cria a instância do servidor baseada na config ajustada
 	srv := conf.New()
 	srv.CloseOnProgramEnd()
 
-	// Registra todos os comandos personalizados do motor de forma segura
+	// Registra todos os subsistemas e comandos do motor
 	plugins.RegistrarComandos()
 	plugins.RegistrarComandosOperator()
 	plugins.RegistrarComandosModeracao()
 	plugins.RegistrarComandosMundo()
 	plugins.RegistrarComandosEconomia()
+	plugins.RegistrarComandosMovimento()
+	plugins.RegistrarOuvintesEventos()
 
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
 
-	// Rotina para aceitar conexões de jogadores
+	// Rotina avançada de aceitação de jogadores usando explicitamente o tipo do pacote player
 	go func() {
 		for pInstance := range srv.Accept() {
+			// Uso explícito do tipo player para satisfazer o compilador do Go
+			var _ *player.Player = pInstance
+
+			log.Printf("[Cobblit Network] Jogador conectado: %s (UUID: %s) IP: %s", pInstance.Name(), pInstance.UUID(), pInstance.Addr())
+
 			players.RegistrarEntrada(pInstance)
 			plugins.RegistrarBoasVindas(pInstance)
 
-			// Se o jogador for novo e não tiver saldo cadastrado, dá a moeda inicial da config
+			// Concede saldo inicial se for novo
 			nome := pInstance.Name()
 			if plugins.GetSaldo(nome) == 0 && cfg.MoedaInicial > 0 {
 				plugins.AddSaldo(nome, cfg.MoedaInicial)
 			}
-
-			go func(pl *player.Player) {
-				gameWorld.StreamChunks(0, 0)
-			}(pInstance)
 		}
 	}()
 
-	// Rotina para escutar as conexões de rede
+	// Background Task Corporativa: Anúncios automáticos do motor no chat global
+	go func() {
+		ticker := time.NewTicker(2 * time.Minute)
+		for range ticker.C {
+			chat.Global.WriteString("§l§b[Cobblit Engine]§r §7Servidor rodando com alta performance e estabilidade!")
+		}
+	}()
+
+	// Rotina de escuta de rede
 	go func() {
 		log.Println("--- Cobblit Engine Iniciada com Sucesso ---")
 		srv.Listen()
 	}()
 
-	// Gerenciamento de sinais do sistema para encerramento seguro
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
