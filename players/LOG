@@ -456,3 +456,72 @@
 03:34:46.295572 db@open done T·13.428179ms
 03:39:42.173290 db@close closing
 03:39:42.176964 db@close done T·4.073854ms
+=============== Jul 26, 2026 (UTC) ===============
+03:50:27.345282 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+03:50:27.347775 version@stat F·[2 1] S·2KiB[1KiB 635B] Sc·[0.50 0.00]
+03:50:27.347909 db@open opening
+03:50:27.348088 journal@recovery F·1
+03:50:27.348343 journal@recovery recovering @103
+03:50:27.349732 memdb@flush created L0@105 N·1 S·749B ")\xfde..3\xe7\xc5,v64":")\xfde..3\xe7\xc5,v64"
+03:50:27.350932 version@stat F·[3 1] S·2KiB[2KiB 635B] Sc·[0.75 0.00]
+03:50:27.365339 db@janitor F·6 G·0
+03:50:27.365422 db@open done T·17.489689ms
+03:52:54.844234 db@close closing
+03:52:54.859952 db@close done T·15.773856ms
+=============== Jul 26, 2026 (UTC) ===============
+04:01:00.913791 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+04:01:00.916397 version@stat F·[3 1] S·2KiB[2KiB 635B] Sc·[0.75 0.00]
+04:01:00.916489 db@open opening
+04:01:00.916697 journal@recovery F·1
+04:01:00.919648 journal@recovery recovering @106
+04:01:00.921355 memdb@flush created L0@108 N·1 S·629B ")\xfde..3\xe7\xc5,v66":")\xfde..3\xe7\xc5,v66"
+04:01:00.921767 version@stat F·[4 1] S·3KiB[2KiB 635B] Sc·[1.00 0.00]
+04:01:00.927707 db@janitor F·7 G·0
+04:01:00.927770 db@open done T·11.25922ms
+04:01:00.927908 table@compaction L0·4 -> L1·1 S·3KiB Q·67
+04:01:00.958127 table@build created L1@111 N·1 S·629B ")\xfde..3\xe7\xc5,v66":")\xfde..3\xe7\xc5,v66"
+04:01:00.958279 version@stat F·[0 1] S·629B[0B 629B] Sc·[0.00 0.00]
+04:01:00.959816 table@compaction committed F-4 S-2KiB Ke·0 D·4 T·31.803753ms
+04:01:00.960141 table@remove removed @105
+04:01:00.960212 table@remove removed @102
+04:01:00.960268 table@remove removed @97
+04:01:00.960318 table@remove removed @96
+04:04:22.649592 db@close closing
+04:04:22.671053 db@close done T·23.197294ms
+=============== Jul 26, 2026 (UTC) ===============
+04:04:34.161094 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+04:04:34.162984 version@stat F·[0 1] S·629B[0B 629B] Sc·[0.00 0.00]
+04:04:34.163071 db@open opening
+04:04:34.163219 journal@recovery F·1
+04:04:34.165120 journal@recovery recovering @109
+04:04:34.166387 memdb@flush created L0@112 N·1 S·657B ")\xfde..3\xe7\xc5,v68":")\xfde..3\xe7\xc5,v68"
+04:04:34.167654 version@stat F·[1 1] S·1KiB[657B 629B] Sc·[0.25 0.00]
+04:04:34.174054 db@janitor F·5 G·1
+04:04:34.174095 db@janitor removing table-108
+04:04:34.174274 db@open done T·11.188022ms
+04:06:18.216095 db@close closing
+04:06:18.220359 db@close done T·4.230209ms
+=============== Jul 26, 2026 (UTC) ===============
+12:46:44.756605 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+12:46:44.758037 version@stat F·[1 1] S·1KiB[657B 629B] Sc·[0.25 0.00]
+12:46:44.758133 db@open opening
+12:46:44.758277 journal@recovery F·1
+12:46:44.758468 journal@recovery recovering @113
+12:46:44.759613 memdb@flush created L0@115 N·1 S·657B ")\xfde..3\xe7\xc5,v70":")\xfde..3\xe7\xc5,v70"
+12:46:44.760008 version@stat F·[2 1] S·1KiB[1KiB 629B] Sc·[0.50 0.00]
+12:46:44.765701 db@janitor F·5 G·0
+12:46:44.765781 db@open done T·7.628073ms
+12:51:28.035717 db@close closing
+12:51:28.037900 db@close done T·2.169948ms
+=============== Jul 26, 2026 (UTC) ===============
+12:59:12.408856 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+12:59:12.410653 version@stat F·[2 1] S·1KiB[1KiB 629B] Sc·[0.50 0.00]
+12:59:12.410721 db@open opening
+12:59:12.410840 journal@recovery F·1
+12:59:12.412765 journal@recovery recovering @116
+12:59:12.414007 memdb@flush created L0@118 N·1 S·723B ")\xfde..3\xe7\xc5,v72":")\xfde..3\xe7\xc5,v72"
+12:59:12.414288 version@stat F·[3 1] S·2KiB[1KiB 629B] Sc·[0.75 0.00]
+12:59:12.419425 db@janitor F·6 G·0
+12:59:12.419487 db@open done T·8.749845ms
+13:02:12.122028 db@close closing
+13:02:12.137997 db@close done T·42.713181ms
