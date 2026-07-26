@@ -20,10 +20,11 @@ func main() {
 	log.Println("[Cobblit Engine] Inicializando núcleos de simulação...")
 	time.Sleep(1 * time.Second)
 
-	// Carrega as configurações centrais do arquivo config.json
 	cfg := plugins.CarregarOuCriarConfig()
 
-	// Gestão de Múltiplos Mundos: Carrega o mundo principal e dimensões extras
+	// Carrega os plugins externos compatíveis com c-shared no Android
+	plugins.CarregarPluginsSo()
+
 	_ = plugins.CarregarOuCriarMundo("world")
 	_ = plugins.CarregarOuCriarMundo("nether")
 
@@ -40,25 +41,28 @@ func main() {
 	srv := conf.New()
 	srv.CloseOnProgramEnd()
 
-	// Registra todos os subsistemas e comandos do motor
 	plugins.RegistrarComandos()
 	plugins.RegistrarComandosOperator()
 	plugins.RegistrarComandosModeracao()
 	plugins.RegistrarComandosMundo()
 	plugins.RegistrarComandosEconomia()
 	plugins.RegistrarComandosMovimento()
-	plugins.RegisterAdminCommands()  // <--- Registro do comando /list ativado!
+	plugins.RegisterAdminCommands()  
 	plugins.RegistrarOuvintesEventos()
-	plugins.RegisterGameRuleCommand() // <--- Registro do comando /worldrule ativado!
-	plugins.RegistrarComandosStatus() // <--- Registro dos comandos /status e /gc ativado!
-	
+	plugins.RegisterGameRuleCommand() 
+	plugins.RegistrarComandosStatus() 
+	plugins.RegistrarBanListCommand() 
+	plugins.RegistrarMeCommand() 
+	plugins.RegistrarClearCommand() 
+	plugins.RegistrarBanIpCommand() 
+	plugins.RegistrarDifficultyCommand() 
+	plugins.RegistrarWhitelistCommand() 
+	plugins.RegistrarPluginsCommand()
 
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
 
-	// Rotina avançada de aceitação de jogadores usando explicitamente o tipo do pacote player
 	go func() {
 		for pInstance := range srv.Accept() {
-			// Uso explícito do tipo player para satisfazer o compilador do Go
 			var _ *player.Player = pInstance
 
 			log.Printf("[Cobblit Network] Jogador conectado: %s (UUID: %s) IP: %s", pInstance.Name(), pInstance.UUID(), pInstance.Addr())
@@ -66,7 +70,6 @@ func main() {
 			players.RegistrarEntrada(pInstance)
 			plugins.RegistrarBoasVindas(pInstance)
 
-			// Concede saldo inicial se for novo
 			nome := pInstance.Name()
 			if plugins.GetSaldo(nome) == 0 && cfg.MoedaInicial > 0 {
 				plugins.AddSaldo(nome, cfg.MoedaInicial)
@@ -74,7 +77,6 @@ func main() {
 		}
 	}()
 
-	// Background Task Corporativa: Anúncios automáticos do motor no chat global
 	go func() {
 		ticker := time.NewTicker(2 * time.Minute)
 		for range ticker.C {
@@ -82,7 +84,6 @@ func main() {
 		}
 	}()
 
-	// Rotina de escuta de rede
 	go func() {
 		log.Println("--- Cobblit Engine Iniciada com Sucesso ---")
 		srv.Listen()
