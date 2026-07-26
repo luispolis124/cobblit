@@ -21,6 +21,9 @@ func main() {
 	log.Println("[Cobblit Engine] Inicializando núcleos de simulação...")
 	time.Sleep(1 * time.Second)
 
+	// Carrega as configurações centrais do arquivo config.json
+	cfg := plugins.CarregarOuCriarConfig()
+
 	gameWorld := world.NewWorld("CobblitAlpha")
 	_ = gameWorld
 
@@ -29,12 +32,12 @@ func main() {
 	// Carrega a configuração padrão do servidor
 	conf, err := server.DefaultConfig().Config(logger)
 	if err != nil {
-		log.Fatalf("[Cobblit Engine] Erro ao carregar config: %v", err)
+		log.Fatalf("[Cobblit Engine] Erro ao carregar config base: %v", err)
 	}
 
-	// Aplica as customizações do motor
-	conf.Name = "Cobblit Engine Alpha"
-	conf.MaxPlayers = 100
+	// Aplica as propriedades válidas vindas direto do config.json
+	conf.Name = cfg.Motd
+	conf.MaxPlayers = cfg.MaxPlayers
 
 	// Cria a instância do servidor baseada na config ajustada
 	srv := conf.New()
@@ -44,7 +47,8 @@ func main() {
 	plugins.RegistrarComandos()
 	plugins.RegistrarComandosOperator()
 	plugins.RegistrarComandosModeracao()
-	plugins.RegistrarComandosMundo() // <--- Adicionado o prefixo 'plugins.' aqui
+	plugins.RegistrarComandosMundo()
+	plugins.RegistrarComandosEconomia()
 
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
 
@@ -53,6 +57,12 @@ func main() {
 		for pInstance := range srv.Accept() {
 			players.RegistrarEntrada(pInstance)
 			plugins.RegistrarBoasVindas(pInstance)
+
+			// Se o jogador for novo e não tiver saldo cadastrado, dá a moeda inicial da config
+			nome := pInstance.Name()
+			if plugins.GetSaldo(nome) == 0 && cfg.MoedaInicial > 0 {
+				plugins.AddSaldo(nome, cfg.MoedaInicial)
+			}
 
 			go func(pl *player.Player) {
 				gameWorld.StreamChunks(0, 0)
