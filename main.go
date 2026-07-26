@@ -47,6 +47,7 @@ func main() {
 	plugins.RegistrarComandosMundo()
 	plugins.RegistrarComandosEconomia()
 	plugins.RegistrarComandosMovimento()
+	plugins.RegistrarComandosExtras() // <--- Registro dos comandos /ping e /suicide ativado!
 	plugins.RegistrarOuvintesEventos()
 
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
