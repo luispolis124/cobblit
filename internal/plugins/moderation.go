@@ -4,33 +4,45 @@ import (
 	"encoding/json"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/world"
 )
 
-const arquivoBanimentos = "bans.json"
+var (
+	bansFile   = "bans.json"
+	bansMutex  sync.Mutex
+	banListMap = make(map[string]string)
+)
 
-// Lista de jogadores banidos armazenada em memória (Nome -> Motivo)
-var banidos = map[string]string{}
-
-// CarregarBans lê o arquivo JSON de banimentos ao ligar o servidor
+// CarregarBans lê o arquivo JSON de banimentos ao ligar o servidor de forma segura
 func CarregarBans() {
-	dados, err := os.ReadFile(arquivoBanimentos)
+	bansMutex.Lock()
+	defer bansMutex.Unlock()
+
+	dados, err := os.ReadFile(bansFile)
 	if err != nil {
-		SalvarBans()
+		salvarBansInterno()
 		return
 	}
-	_ = json.Unmarshal(dados, &banidos)
+	_ = json.Unmarshal(dados, &banListMap)
 }
 
-// SalvarBans grava a lista atualizada de banidos no arquivo JSON
-func SalvarBans() {
-	dados, err := json.MarshalIndent(banidos, "", "  ")
+// salvarBansInterno grava a lista de banidos assumindo que o mutex JÁ ESTÁ travado
+func salvarBansInterno() {
+	dados, err := json.MarshalIndent(banListMap, "", "  ")
 	if err == nil {
-		_ = os.WriteFile(arquivoBanimentos, dados, 0644)
+		_ = os.WriteFile(bansFile, dados, 0644)
 	}
+}
+
+// SalvarBans grava a lista atualizada de banidos com segurança de concorrência
+func SalvarBans() {
+	bansMutex.Lock()
+	defer bansMutex.Unlock()
+	salvarBansInterno()
 }
 
 // KickCommand gerencia o comando /kick com segurança e Varargs anti-crash
@@ -86,9 +98,10 @@ func (c BanCommand) Run(src cmd.Source, o *cmd.Output, tx *world.Tx) {
 		razao = "Banido do servidor"
 	}
 
-	// Adiciona à lista de banidos e salva no JSON
-	banidos[alvoStr] = razao
-	SalvarBans()
+	bansMutex.Lock()
+	banListMap[alvoStr] = razao
+	salvarBansInterno()
+	bansMutex.Unlock()
 
 	o.Printf("§4[Cobblit Engine] O jogador %s foi banido. Motivo: %s", alvoStr, razao)
 }
@@ -112,20 +125,22 @@ func (c UnbanCommand) Run(src cmd.Source, o *cmd.Output, tx *world.Tx) {
 		return
 	}
 
-	if _, existe := banidos[alvoStr]; !existe {
+	bansMutex.Lock()
+	if _, existe := banListMap[alvoStr]; !existe {
+		bansMutex.Unlock()
 		o.Errorf("§cO jogador %s não está banido.", alvoStr)
 		return
 	}
 
-	// Remove do mapa de banidos e atualiza o JSON
-	delete(banidos, alvoStr)
-	SalvarBans()
+	delete(banListMap, alvoStr)
+	salvarBansInterno()
+	bansMutex.Unlock()
 
 	o.Printf("§a[Cobblit Engine] O jogador %s foi desbanido com sucesso.", alvoStr)
 }
 
 func RegistrarComandosModeracao() {
-	CarregarBans() // Carrega os banimentos salvos ao iniciar o motor
+	CarregarBans()
 	cmd.Register(cmd.New("kick", "Expulsa um jogador do servidor", []string{}, KickCommand{}))
 	cmd.Register(cmd.New("ban", "Bane um jogador do servidor", []string{}, BanCommand{}))
 	cmd.Register(cmd.New("unban", "Remove o banimento de um jogador", []string{}, UnbanCommand{}))

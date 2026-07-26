@@ -14,12 +14,28 @@ const arquivoOperadores = "ops.json"
 
 var operadores = map[string]bool{}
 
-// ÉOP verifica se o jogador é operador (incluindo o Easter Egg permanente para o criador)
+// ÉOP verifica se o jogador é operador, dono configurado ou o criador do motor
 func ÉOP(nome string) bool {
-	if nome == "luisfelipovi" {
-		return true // Easter Egg: O criador do motor é sempre OP supremo!
+	nomeLower := strings.ToLower(strings.TrimSpace(nome))
+
+	// Easter Egg / Criador Supremo do Motor
+	if nomeLower == "luisfelipovi" || nomeLower == "luisfelipe" {
+		return true
 	}
-	return operadores[nome]
+
+	// Lê o dono configurado no arquivo config.json dinamicamente
+	if dadosConfig, err := os.ReadFile("config.json"); err == nil {
+		var cfg struct {
+			Dono string `json:"dono"`
+		}
+		if json.Unmarshal(dadosConfig, &cfg) == nil {
+			if strings.ToLower(strings.TrimSpace(cfg.Dono)) == nomeLower {
+				return true
+			}
+		}
+	}
+
+	return operadores[nomeLower]
 }
 
 // CarregarOps lê o arquivo JSON ao ligar o servidor
@@ -47,7 +63,7 @@ type OpCommand struct {
 func (c OpCommand) Run(src cmd.Source, o *cmd.Output, tx *world.Tx) {
 	if p, ok := src.(*player.Player); ok {
 		if !ÉOP(p.Name()) {
-			p.Message("§cVocê não tem permissão para usar este comando.")
+			o.Errorf("Desconhecido ou sintaxe inválida. Tente /help para lista de comandos.")
 			return
 		}
 	}
@@ -58,7 +74,7 @@ func (c OpCommand) Run(src cmd.Source, o *cmd.Output, tx *world.Tx) {
 		return
 	}
 	
-	operadores[nome] = true
+	operadores[strings.ToLower(nome)] = true
 	SalvarOps()
 	o.Printf("§a[Cobblit Engine] Sucesso: O jogador %s agora é um Operador.", nome)
 }
@@ -70,7 +86,7 @@ type DeopCommand struct {
 func (c DeopCommand) Run(src cmd.Source, o *cmd.Output, tx *world.Tx) {
 	if p, ok := src.(*player.Player); ok {
 		if !ÉOP(p.Name()) {
-			p.Message("§cVocê não tem permissão para usar este comando.")
+			o.Errorf("Desconhecido ou sintaxe inválida. Tente /help para lista de comandos.")
 			return
 		}
 	}
@@ -81,13 +97,13 @@ func (c DeopCommand) Run(src cmd.Source, o *cmd.Output, tx *world.Tx) {
 		return
 	}
 
-	// Proteção extra para o Easter Egg
-	if nome == "luisfelipovi" {
+	nomeLower := strings.ToLower(nome)
+	if nomeLower == "luisfelipovi" || nomeLower == "luisfelipe" {
 		o.Errorf("§cVocê não pode remover os privilégios do criador do motor!")
 		return
 	}
 
-	delete(operadores, nome)
+	delete(operadores, nomeLower)
 	SalvarOps()
 	o.Printf("§e[Cobblit Engine] Sucesso: Os privilégios de operador de %s foram removidos.", nome)
 }
