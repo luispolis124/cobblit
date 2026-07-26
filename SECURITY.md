@@ -9,7 +9,7 @@ We take the security of the **Cobblit Engine** seriously. The following table ou
 
 ## Reporting a Vulnerability
 If you discover a security vulnerability within the Cobblit Engine, please **do not open a public issue**. Instead, report it privately so we can address it responsibly before public disclosure.
-* **How to report:** Send an email directly to the repository maintainer at **luispolis124@gmail.com** (or reach out via GitHub profile discussions/private channels if available).
+* **How to report:** Send an email directly to the repository maintainer at **luisfelipovi@gmail.com** (or reach out via GitHub profile discussions/private channels if available).
 * **What to include:**
   * A description of the vulnerability and its potential impact.
   * Steps or a proof-of-concept (PoC) to reproduce the issue.
