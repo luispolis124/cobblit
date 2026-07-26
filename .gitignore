@@ -1,5 +1,30 @@
-server.toml
-config.toml
-world/
+# Binários de compilação do Go e executáveis do Windows/Linux
 *.exe
+*.dll
+*.so
+*.dylib
 *.o
+*.out
+*.test
+*.prof
+
+# Arquivos de Configuração Locais (para não sobrescrever dados do servidor)
+config.json
+config.toml
+
+# Bancos de dados e arquivos JSON de dados gerados em tempo de execução
+economy.json
+bans.json
+ops.json
+
+# Pastas de mundos e dados de salvamento do Dragonfly
+world/
+worlds/
+*.db
+level.dat
+
+# Pastas e arquivos gerados pelo VS Code, Termux ou IDEs
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
